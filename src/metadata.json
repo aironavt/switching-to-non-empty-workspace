@@ -1,0 +1,8 @@
+{
+  "shell-version": ["3.32"],
+  "uuid": "switching-to-non-empty-workspace@aironavt.github.io",
+  "name": "Switching to a non-empty workspace",
+  "description": "Switching to a non-empty workspace",
+  "url": "https://github.com/aironavt/switching-to-non-empty-workspace",
+  "settings-schema": "org.gnome.shell.extensions.switching-to-non-empty-workspace"
+}

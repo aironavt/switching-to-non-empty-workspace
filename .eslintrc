@@ -1,0 +1,14 @@
+{
+  "extends": ["airbnb-base"],
+  "rules": {
+    "max-len": ["error", 120],
+    "no-underscore-dangle": "off",
+    "no-plusplus": "off",
+    "class-methods-use-this": "off",
+    "consistent-return": "off",
+    "prefer-destructuring": "off"
+  },
+  "env": {
+    "es6": true
+  }
+}

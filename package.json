@@ -1,0 +1,24 @@
+{
+  "name": "switching-to-non-empty-workspace",
+  "version": "0.1.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "lint": "eslint src -c .eslintrc --ext js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aironavt/switching-to-non-empty-workspace.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aironavt/switching-to-non-empty-workspace/issues"
+  },
+  "homepage": "https://github.com/aironavt/switching-to-non-empty-workspace#readme",
+  "author": "Evgeniy Vladykin <aironavt@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "6.5.1",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-plugin-import": "2.18.2"
+  }
+}

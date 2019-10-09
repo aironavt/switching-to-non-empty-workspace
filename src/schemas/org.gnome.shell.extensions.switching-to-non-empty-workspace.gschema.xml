@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+    <schema id="org.gnome.shell.extensions.switching-to-non-empty-workspace" path="/org/gnome/shell/extensions/switching-to-non-empty-workspace/">
+        <key type="as" name="switch-to-prev-non-empty-workspace">
+            <default><![CDATA[['<Alt>l']]]></default>
+            <summary>Prev</summary>
+        </key>
+        <key type="as" name="switch-to-next-non-empty-workspace">
+            <default><![CDATA[['<Alt>k']]]></default>
+            <summary>Next</summary>
+        </key>
+    </schema>
+</schemalist>
