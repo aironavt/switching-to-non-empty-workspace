@@ -6,7 +6,9 @@
     "no-plusplus": "off",
     "class-methods-use-this": "off",
     "consistent-return": "off",
-    "prefer-destructuring": "off"
+    "prefer-destructuring": "off",
+    "no-restricted-syntax": "off",
+    "no-continue": "off"
   },
   "env": {
     "es6": true
