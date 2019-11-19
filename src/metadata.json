@@ -2,6 +2,7 @@
   "shell-version": ["3.32"],
   "uuid": "switching-to-non-empty-workspace@aironavt.github.io",
   "name": "Switching to a non-empty workspace",
+  "version": 1,
   "description": "Extensions for switching between non-empty workspaces also allow workspace wrap around in switcher. When switching workspaces, going down from the bottom workspace switches to the top workspace. Likewise, up from the top workspace goes to the bottom workspace.",
   "url": "https://github.com/aironavt/switching-to-non-empty-workspace",
   "settings-schema": "org.gnome.shell.extensions.switching-to-non-empty-workspace"
