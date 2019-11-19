@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-    <schema id="org.gnome.shell.extensions.switching-to-non-empty-workspace" path="/org/gnome/shell/extensions/switching-to-non-empty-workspace/">
-        <key type="as" name="switch-to-prev-non-empty-workspace">
-            <default><![CDATA[['<Alt>l']]]></default>
-            <summary>Prev</summary>
-        </key>
-        <key type="as" name="switch-to-next-non-empty-workspace">
-            <default><![CDATA[['<Alt>k']]]></default>
-            <summary>Next</summary>
-        </key>
-    </schema>
+  <schema id="org.gnome.shell.extensions.switching-to-non-empty-workspace"
+          path="/org/gnome/shell/extensions/switching-to-non-empty-workspace/">
+    <key type="as" name="switch-to-prev-non-empty-workspace">
+      <default>[]</default>
+      <summary>Move to a non-empty workspace above</summary>
+    </key>
+    <key type="as" name="switch-to-next-non-empty-workspace">
+      <default>[]</default>
+      <summary>Move to a non-empty workspace below</summary>
+    </key>
+    <key type="b" name="switch-to-prev-non-empty-workspace-enabled">
+      <default>false</default>
+      <summary>Enable/Disable move to a non-empty workspace above</summary>
+    </key>
+    <key type="b" name="switch-to-next-non-empty-workspace-enabled">
+      <default>false</default>
+      <summary>Enable/Disable move to a non-empty workspace below</summary>
+    </key>
+    <key type="b" name="workspace-wrap-around">
+      <default>false</default>
+      <summary>Allow workspace wrap around in switcher</summary>
+      <description>
+        When switching workspaces, going down from the bottom workspace switches to the top workspace.
+        Likewise, up from the top workspace goes to the bottom workspace
+      </description>
+    </key>
+  </schema>
 </schemalist>

@@ -3,9 +3,13 @@ const Meta = imports.gi.Meta;
 const Main = imports.ui.main;
 const Shell = imports.gi.Shell;
 const ExtensionUtils = imports.misc.extensionUtils;
+const Extension = ExtensionUtils.getCurrentExtension();
+const {
+  SWITCH_TO_PREV_NON_EMPTY_WORKSPACE,
+  SWITCH_TO_NEXT_NON_EMPTY_WORKSPACE,
+  WORKSPACE_WRAP_AROUND,
+} = Extension.imports.constants;
 
-const SWITCH_TO_PREV_NON_EMPTY_WORKSPACE = 'switch-to-prev-non-empty-workspace';
-const SWITCH_TO_NEXT_NON_EMPTY_WORKSPACE = 'switch-to-next-non-empty-workspace';
 const motionDirection = {
   PREV_WORKSPACE: 'prev',
   NEXT_WORKSPACE: 'next',
@@ -14,41 +18,54 @@ const motionDirection = {
 // eslint-disable-next-line no-unused-vars
 class SwitchingToNonEmptyWorkspace {
   constructor() {
-    this.initialize();
-  }
+    this._isWorkspaceWrapAround = false;
+    this._settings = ExtensionUtils.getSettings();
+    this._originGetNeighbor = Meta.Workspace.prototype.get_neighbor;
 
-  initialize() {
-    this.settings = ExtensionUtils.getSettings();
-    this.originGetNeighbor = Meta.Workspace.prototype.get_neighbor;
-
-    Meta.Workspace.prototype.get_neighbor = this.getNeighbor.bind(this);
-
-    this._addKeyBinding(SWITCH_TO_PREV_NON_EMPTY_WORKSPACE, this.switchToPrevNoEmptyWorkspace);
-    this._addKeyBinding(SWITCH_TO_NEXT_NON_EMPTY_WORKSPACE, this.switchToNextNoEmptyWorkspace);
+    this._addKeyBinding(SWITCH_TO_PREV_NON_EMPTY_WORKSPACE, this._onSwitchToPrevNoEmptyWorkspace);
+    this._addKeyBinding(SWITCH_TO_NEXT_NON_EMPTY_WORKSPACE, this._onSwitchToNextNoEmptyWorkspace);
+    this._onWorkspaceWrapAroundChanged();
+    this._settingsWorkspaceWrapAround = this._settings.connect(
+      `changed::${WORKSPACE_WRAP_AROUND}`,
+      this._onWorkspaceWrapAroundChanged.bind(this),
+    );
+    this._toggleNeighborHandler();
   }
 
   destroy() {
-    Meta.Workspace.prototype.get_neighbor = this.originGetNeighbor;
+    Meta.Workspace.prototype.get_neighbor = this._originGetNeighbor;
     Main.wm.removeKeybinding(SWITCH_TO_PREV_NON_EMPTY_WORKSPACE);
     Main.wm.removeKeybinding(SWITCH_TO_NEXT_NON_EMPTY_WORKSPACE);
+    this._settings.disconnect(this._settingsWorkspaceWrapAround);
   }
 
-  switchToPrevNoEmptyWorkspace() {
+  _onSwitchToPrevNoEmptyWorkspace() {
     this._switchWorkspace(motionDirection.PREV_WORKSPACE);
   }
 
-  switchToNextNoEmptyWorkspace() {
+  _onSwitchToNextNoEmptyWorkspace() {
     this._switchWorkspace(motionDirection.NEXT_WORKSPACE);
   }
 
   _addKeyBinding(event, callback) {
     Main.wm.addKeybinding(
       event,
-      this.settings,
+      this._settings,
       Meta.KeyBindingFlags.NONE,
       Shell.ActionMode.NORMAL,
       callback.bind(this),
     );
+  }
+
+  _onWorkspaceWrapAroundChanged() {
+    this._isWorkspaceWrapAround = this._settings.get_boolean(WORKSPACE_WRAP_AROUND);
+    this._toggleNeighborHandler();
+  }
+
+  _toggleNeighborHandler() {
+    Meta.Workspace.prototype.get_neighbor = this._isWorkspaceWrapAround
+      ? this._getNeighbor.bind(this)
+      : this._originGetNeighbor;
   }
 
   _switchWorkspace(direction) {
@@ -60,7 +77,7 @@ class SwitchingToNonEmptyWorkspace {
     }
   }
 
-  getNeighbor(direction) {
+  _getNeighbor(direction) {
     let activeWorkspaceIndex = this._getActiveWorkspaceIndex();
 
     if (this._getWorkspaceNumber() >= 2) {
@@ -85,11 +102,19 @@ class SwitchingToNonEmptyWorkspace {
       return;
     }
 
-    const list = this._createList(
+    let list = this._createList(
       activeWorkspaceIndex,
       this._getWorkspaceNumber(),
       direction,
     );
+
+    if (!this._isWorkspaceWrapAround) {
+      const directionFilter = direction === motionDirection.NEXT_WORKSPACE
+        ? (index) => index >= activeWorkspaceIndex
+        : (index) => index <= activeWorkspaceIndex;
+
+      list = list.filter(directionFilter);
+    }
 
     return list.find((index) => this._getWorkspaceByIndex(index).list_windows().length);
   }
@@ -110,23 +135,15 @@ class SwitchingToNonEmptyWorkspace {
     return global.workspace_manager.get_active_workspace_index();
   }
 
-  /**
-   *
-   * @param {int} firstIndex
-   * @param {int} length
-   * @param {motionDirection} direction
-   * @returns {[]}
-   * @private
-   */
   _createList(firstIndex, length, direction) {
     const list = [];
-    const p = direction === motionDirection.NEXT_WORKSPACE ? 1 : -1;
+    const directionInc = direction === motionDirection.NEXT_WORKSPACE ? 1 : -1;
 
     for (let index = 1; index <= length; index++) {
-      let nextIndex = firstIndex + (index * p);
+      let nextIndex = firstIndex + (index * directionInc);
 
       if (nextIndex < 0 || nextIndex >= length) {
-        nextIndex -= (length * p);
+        nextIndex -= (length * directionInc);
       }
 
       list.push(nextIndex);
