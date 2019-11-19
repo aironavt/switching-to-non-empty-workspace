@@ -1,7 +1,7 @@
 {
   "name": "switching-to-non-empty-workspace",
   "version": "0.1.0",
-  "description": "",
+  "description": "GNOME shell extensions for switching between non-empty workspaces also allow workspace wrap around in switcher.",
   "private": true,
   "scripts": {
     "lint": "eslint src -c .eslintrc --ext js"
